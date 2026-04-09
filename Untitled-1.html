@@ -1,219 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>AI Grant Proposal Generator</title>
+  <meta charset="UTF-8">
+  <title>AI Grant Proposal Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
 
-<style>
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    margin: 0;
-}
+    .container {
+      width: 80%;
+      margin: auto;
+      margin-top: 20px;
+    }
 
-.container {
-    width: 85%;
-    margin: auto;
-    padding: 20px;
-}
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-h1 { text-align: center; }
+    h2 {
+      color: #2c3e50;
+    }
 
-.card {
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 20px;
-}
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
 
-input, textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 8px;
-    border: none;
-}
+    button {
+      background-color: #27ae60;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 20px;
-    background: linear-gradient(45deg,#ff6a00,#ee0979);
-    color: white;
-    cursor: pointer;
-}
+    button:hover {
+      background-color: #219150;
+    }
 
-.dashboard {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.box {
-    flex: 1;
-    background: rgba(255,255,255,0.2);
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.chatbox {
-    height: 200px;
-    overflow-y: auto;
-    background: rgba(0,0,0,0.2);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.output {
-    white-space: pre-wrap;
-    background: rgba(255,255,255,0.2);
-    padding: 15px;
-    border-radius: 10px;
-}
-</style>
+    .output {
+      background-color: #ecf0f1;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-<h1>🚀 AI Grant Proposal Generator</h1>
+  <header>
+    <h1>AI Grant Proposal Generator</h1>
+  </header>
 
-<!-- Dashboard -->
-<div class="card dashboard">
-    <div class="box">
-        <h3>Total Budget</h3>
-        <p id="totalBudget">₹0</p>
+  <div class="container">
+
+    <!-- INPUT SECTION -->
+    <div class="card">
+      <h2>Funding Opportunity Announcement (FOA)</h2>
+      <textarea id="foa" placeholder="Enter funding details..."></textarea>
+
+      <h2>Researcher Profile</h2>
+      <textarea id="researcher" placeholder="Enter researcher expertise..."></textarea>
+
+      <h2>Project Idea</h2>
+      <textarea id="idea" placeholder="Enter project idea..."></textarea>
+
+      <br><br>
+      <button onclick="generateProposal()">Generate Proposal</button>
     </div>
-    <div class="box">
-        <h3>Project Duration</h3>
-        <p>6 Months</p>
+
+    <!-- OUTPUT SECTION -->
+    <div class="card">
+      <h2>Generated Proposal</h2>
+      <div id="proposalOutput" class="output"></div>
     </div>
-    <div class="box">
-        <h3>Status</h3>
-        <p>Draft</p>
+
+    <div class="card">
+      <h2>Budget Plan</h2>
+      <div id="budgetOutput" class="output"></div>
     </div>
-</div>
 
-<!-- Form -->
-<div class="card">
-    <h3>Project Details</h3>
-    <input id="title" placeholder="Project Title">
-    <textarea id="idea" placeholder="Project Idea"></textarea>
-    <input id="researcher" placeholder="Researcher Expertise">
-</div>
+    <div class="card">
+      <h2>Timeline</h2>
+      <div id="timelineOutput" class="output"></div>
+    </div>
 
-<!-- Budget Input -->
-<div class="card">
-    <h3>💰 Budget Planner</h3>
-    <input id="equip" type="number" placeholder="Equipment Cost">
-    <input id="personnel" type="number" placeholder="Personnel Cost">
-    <input id="misc" type="number" placeholder="Misc Cost">
-    <button onclick="calculateBudget()">Calculate Total</button>
-</div>
+    <div class="card">
+      <h2>Compliance Report</h2>
+      <div id="complianceOutput" class="output"></div>
+    </div>
 
-<!-- Chatbot -->
-<div class="card">
-    <h3>🤖 AI Chat Assistant</h3>
-    <div class="chatbox" id="chatbox"></div>
-    <input id="chatInput" placeholder="Ask something...">
-    <button onclick="sendMessage()">Send</button>
-</div>
+  </div>
 
-<!-- Buttons -->
-<div class="card">
-    <button onclick="generateProposal()">Generate Proposal</button>
-    <button onclick="downloadPDF()">Download PDF</button>
-</div>
+  <script>
+    function generateProposal() {
 
-<!-- Output -->
-<div class="card">
-    <h3>Generated Proposal</h3>
-    <div id="output" class="output"></div>
-</div>
+      let foa = document.getElementById("foa").value;
+      let researcher = document.getElementById("researcher").value;
+      let idea = document.getElementById("idea").value;
 
-</div>
+      // Simulated AI Output (Frontend Demo)
+      let proposal = `
+Title: AI-Based Research Project
 
-<script>
+Abstract:
+This project aligns with funding priorities and aims to develop innovative solutions.
 
-// Budget calculation
-function calculateBudget(){
-    let e = Number(document.getElementById("equip").value) || 0;
-    let p = Number(document.getElementById("personnel").value) || 0;
-    let m = Number(document.getElementById("misc").value) || 0;
+Objectives:
+- Develop system
+- Analyze data
 
-    let total = e + p + m;
+Methodology:
+- Data collection
+- Model development
 
-    document.getElementById("totalBudget").innerText = "₹" + total;
-}
+Impact:
+Improves efficiency and research outcomes.
 
-// Chatbot (demo AI)
-function sendMessage(){
-    let input = document.getElementById("chatInput").value;
-    let chatbox = document.getElementById("chatbox");
+Conclusion:
+This proposal meets agency goals.
+    `;
 
-    chatbox.innerHTML += "<p><b>You:</b> " + input + "</p>";
+      let budget = `
+Personnel: $50,000
+Equipment: $20,000
+Software: $10,000
+Total: $80,000
+    `;
 
-    let reply = "I suggest improving your proposal clarity and aligning with funding goals.";
+      let timeline = `
+Month 1-2: Research
+Month 3-5: Development
+Month 6: Testing
+    `;
 
-    if(input.toLowerCase().includes("budget")){
-        reply = "Make sure your budget is realistic and justified.";
+      let compliance = `
+✔ Format Correct
+✔ Eligibility Met
+✔ All Sections Included
+    `;
+
+      document.getElementById("proposalOutput").innerText = proposal;
+      document.getElementById("budgetOutput").innerText = budget;
+      document.getElementById("timelineOutput").innerText = timeline;
+      document.getElementById("complianceOutput").innerText = compliance;
     }
-    if(input.toLowerCase().includes("timeline")){
-        reply = "Divide your timeline into research, development, and testing phases.";
-    }
-
-    chatbox.innerHTML += "<p><b>AI:</b> " + reply + "</p>";
-    document.getElementById("chatInput").value = "";
-}
-
-// Proposal generation
-function generateProposal(){
-    let title = document.getElementById("title").value;
-    let idea = document.getElementById("idea").value;
-    let researcher = document.getElementById("researcher").value;
-    let budget = document.getElementById("totalBudget").innerText;
-
-    let proposal = `
-TITLE: ${title}
-
-ABSTRACT:
-${idea}
-
-METHODOLOGY:
-Using expertise in ${researcher}
-
-TIMELINE:
-6 Months (Research → Development → Testing)
-
-TOTAL BUDGET:
-${budget}
-
-CONCLUSION:
-This project aligns with funding priorities.
-`;
-
-    document.getElementById("output").innerText = proposal;
-}
-
-// PDF
-function downloadPDF(){
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    let text = document.getElementById("output").innerText;
-    let lines = doc.splitTextToSize(text, 180);
-
-    doc.text(lines, 10, 10);
-    doc.save("proposal.pdf");
-}
-
-</script>
+  </script>
 
 </body>
+
 </html>
